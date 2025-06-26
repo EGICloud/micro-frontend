@@ -33,16 +33,22 @@ jobs:
       run: |
         echo "Pushed image: tomasbeltran/frontend:${SHORT_SHA}"
 
+    - name: Checkout manifests repo
+      uses: actions/checkout@v3
+      with:
+        repository: EGICloud/gitops
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        path: manifests
+
     - name: Replace image tag in deployment.yaml
       run: |
-        sed -i "s|image: tomasbeltran/frontend:.*|image: tomasbeltran/frontend:${SHORT_SHA}|g" EGICloud/gitops/micro-frontend/base/deployment.yaml
+        sed -i "s|image: tomasbeltran/frontend:.*|image: tomasbeltran/frontend:${SHORT_SHA}|g" manifests/micro-frontend/base/deployment.yaml
 
     - name: Commit and push deployment.yaml
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      working-directory: manifests
       run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        git add deployment.yaml
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config user.name "github-actions[bot]"
+        git add micro-frontend/base/deployment.yaml
         git commit -m "Update frontend image tag to ${SHORT_SHA}" || echo "No changes to commit"
         git push
