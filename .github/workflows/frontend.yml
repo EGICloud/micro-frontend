@@ -35,7 +35,7 @@ jobs:
 
     - name: Replace image tag in deployment.yaml
       run: |
-        sed -i "s|image: tomasbeltran/frontend:.*|image: tomasbeltran/frontend:${SHORT_SHA}|g" manifests/gitops/micro-frontend/base/deployment.yaml
+        sed -i "s|image: tomasbeltran/frontend:.*|image: tomasbeltran/frontend:${SHORT_SHA}|g" gitops/micro-frontend/base/deployment.yaml
 
     - name: Commit and push deployment.yaml
       env:
